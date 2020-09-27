@@ -54,30 +54,7 @@ function signIn(req, res) {
   })(req, res);
 }
 
-function siginFacebook(req, res) {
-  passport.authenticate("facebook-token", { session: false }, function (
-    err,
-    user,
-    info
-  ) {
-    console.log(err);
-    if (!user) {
-      return res.status(401).json({ massge: "User not authenticated" });
-    }
-    const payload = {
-      sub: user._id,
-      expr: moment().add("1", "hour").unix(),
-    };
-
-    let token = jwt.sign(JSON.stringify(payload), process.env.TOKEN_SECRET);
-    req.token = token;
-
-    res.setHeader("x-auth-token", req.token);
-    res.status(200).json(user);
-  })(req, res);
-}
 module.exports = {
   signUp,
   signIn,
-  siginFacebook,
 };
