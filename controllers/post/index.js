@@ -119,7 +119,7 @@ async function getLikeInPost(user_id, posts) {
 async function deletePost(req, res) {
   console.log("Eliminando post ....");
   const idUser = req.user;
-  const idPost = req.body.id_post;
+  const idPost = req.body.idPost;
   console.log(req.body, "ID: " + idPost);
   try {
     const post = await postModel.findById({ _id: idPost });

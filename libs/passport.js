@@ -31,36 +31,36 @@ passport.use(
   )
 );
 
-passport.use(
-  new FacebookTokenStrategy(
-    {
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-    },
-    function (accessToken, refreshToken, profile, done) {
-      return UserModel.findOne({ facebookId: profile.id }, { password: 0 })
-        .then((doc) => {
-          if (doc) return done(null, doc);
-          const user = {
-            facebookId: profile.id,
-            name: profile.displayName.split(" ")[0],
-            lastname: profile.displayName.split(" ")[1],
-            userName:
-              profile.displayName.split(" ")[0] +
-              Date.now().toString().slice(0, 5),
-            email: profile.emails[0].value,
-            img: profile.photos[0].value,
-          };
+// passport.use(
+//   new FacebookTokenStrategy(
+//     {
+//       clientID: process.env.FACEBOOK_APP_ID,
+//       clientSecret: process.env.FACEBOOK_APP_SECRET,
+//     },
+//     function (accessToken, refreshToken, profile, done) {
+//       return UserModel.findOne({ facebookId: profile.id }, { password: 0 })
+//         .then((doc) => {
+//           if (doc) return done(null, doc);
+//           const user = {
+//             facebookId: profile.id,
+//             name: profile.displayName.split(" ")[0],
+//             lastname: profile.displayName.split(" ")[1],
+//             userName:
+//               profile.displayName.split(" ")[0] +
+//               Date.now().toString().slice(0, 5),
+//             email: profile.emails[0].value,
+//             img: profile.photos[0].value,
+//           };
 
-          console.log("USER CREADO ", user);
+//           console.log("USER CREADO ", user);
 
-          UserModel.create(user, { passport: 0 }).then((docCreated) => {
-            return done(null, docCreated);
-          });
-        })
-        .catch((err) => {
-          return done(err, false);
-        });
-    }
-  )
-);
+//           UserModel.create(user, { passport: 0 }).then((docCreated) => {
+//             return done(null, docCreated);
+//           });
+//         })
+//         .catch((err) => {
+//           return done(err, false);
+//         });
+//     }
+//   )
+// );

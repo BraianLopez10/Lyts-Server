@@ -1,6 +1,5 @@
 require("./db.js");
 const express = require("express");
-process.env.TZ = "UTC-4";
 const routes = require("./routes");
 const auth = require("./routes/auth");
 const middlewares = require("./middleware");
