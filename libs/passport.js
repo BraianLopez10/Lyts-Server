@@ -16,7 +16,6 @@ passport.use(
       if (!userName || !passport) return done(null, false);
       return UserModel.findOne({ userName })
         .then((data) => {
-          console.log(data);
           if (!data) return done(null, false);
           if (!bcrypt.compareSync(password, data.password))
             return done(null, false);
@@ -31,36 +30,43 @@ passport.use(
   )
 );
 
-// passport.use(
-//   new FacebookTokenStrategy(
-//     {
-//       clientID: process.env.FACEBOOK_APP_ID,
-//       clientSecret: process.env.FACEBOOK_APP_SECRET,
-//     },
-//     function (accessToken, refreshToken, profile, done) {
-//       return UserModel.findOne({ facebookId: profile.id }, { password: 0 })
-//         .then((doc) => {
-//           if (doc) return done(null, doc);
-//           const user = {
-//             facebookId: profile.id,
-//             name: profile.displayName.split(" ")[0],
-//             lastname: profile.displayName.split(" ")[1],
-//             userName:
-//               profile.displayName.split(" ")[0] +
-//               Date.now().toString().slice(0, 5),
-//             email: profile.emails[0].value,
-//             img: profile.photos[0].value,
-//           };
+passport.use(
+  new FacebookTokenStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      try {
+        let user = await UserModel.findOne(
+          { facebookId: profile.id },
+          { password: 0 }
+        );
+        if (user) return done(null, user);
 
-//           console.log("USER CREADO ", user);
+        //Creamos el usuario
+        let newUser = new UserModel({
+          facebookId: profile.id,
+          name: profile.displayName,
+          lastname: profile.displayName.split(" ")[1],
+          userName:
+            profile.displayName.replace(" ", "") +
+            Date.now().toString().slice(0, 5),
+          email: profile.emails[0].value,
+          img: profile.photos[0].value,
+        });
 
-//           UserModel.create(user, { passport: 0 }).then((docCreated) => {
-//             return done(null, docCreated);
-//           });
-//         })
-//         .catch((err) => {
-//           return done(err, false);
-//         });
-//     }
-//   )
-// );
+        await newUser.save({ password: 0 });
+
+        let userSavedWithData = await UserModel.findOne(
+          { facebookId: profile.id },
+          { password: 0 }
+        );
+        return done(null, userSavedWithData);
+      } catch (err) {
+        console.log(err);
+        return done("Error", null);
+      }
+    }
+  )
+);

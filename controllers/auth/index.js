@@ -42,7 +42,7 @@ function signIn(req, res) {
     }
     const payload = {
       sub: data._id,
-      exp: moment().add("1", "hour").unix(),
+      exp: moment().add("5", "hour").unix(),
     };
     let token = jwt.sign(JSON.stringify(payload), process.env.TOKEN_SECRET);
     //Temporal;
@@ -54,7 +54,27 @@ function signIn(req, res) {
   })(req, res);
 }
 
+function signUpFacebook(req,res) {
+  passport.authenticate('facebook-token' , { session:false } , function (err , data , info) {
+
+    if (data) {
+      const payload = {
+        sub: data._id,
+        exp: moment().add("5", "hour").unix(),
+      };
+      let token = jwt.sign(JSON.stringify(payload), process.env.TOKEN_SECRET);
+      res.set('x-auth-token' , token)
+      return res.status(200).json({
+        data
+      })
+    }else{
+      return res.status(401).send()
+    }
+  })(req,res)
+}
+
 module.exports = {
   signUp,
   signIn,
+  signUpFacebook
 };

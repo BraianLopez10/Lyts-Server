@@ -36,6 +36,7 @@ async function getUser(req, res) {
 }
 async function getUserLogged(req, res) {
   const user = req.user;
+  console.log(req.user)
   if (!user) return res.status(404).send();
   try {
     const userData = await UserModel.findOne({ _id: user }, { password: 0 })
