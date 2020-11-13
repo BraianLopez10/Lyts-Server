@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
     password: {
       type: String,
       minlength: 8,
-      maxlength: 30
+      maxlength: 30,
     },
     name: {
       type: String,
@@ -31,7 +31,7 @@ const schema = new mongoose.Schema(
     },
     img: {
       type: String,
-      default: "",
+      default: "https://lyts-10.s3-sa-east-1.amazonaws.com/profile_default.jpg",
     },
     bio: {
       type: String,

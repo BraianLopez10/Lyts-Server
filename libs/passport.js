@@ -49,9 +49,9 @@ passport.use(
           facebookId: profile.id,
           name: profile.displayName,
           lastname: profile.displayName.split(" ")[1],
-          userName:
-            profile.displayName.replace(" ", "") +
-            Date.now().toString().slice(0, 5),
+          userName: `${
+            profile.displayName.split(" ")[0]
+          }${Date.now().toString()}`.slice(0, 10),
           email: profile.emails[0].value,
           img: profile.photos[0].value,
         });
