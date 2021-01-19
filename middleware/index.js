@@ -21,5 +21,4 @@ let middlewares = {
     next();
   },
 };
-
-module.exports = middlewares;
+export default middlewares;
