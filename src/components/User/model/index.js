@@ -81,17 +81,17 @@ UserSchema.pre("save", function (next) {
 });
 
 UserSchema.pre("findOne", async function () {
-  this.populate({ path: "posts" });
-  // .populate("numSeguiendo")
-  // .populate("numSeguidores");
-  // .populate({
-  //   path: "follows",
-  //   model: "follow",
-  //   select: "follow -_id -user",
-  //   populate: {
-  //     path: "follow",
-  //     select: "username img lastConnection",
-  //   },
-  // });
+  this.populate({ path: "posts" })
+    .populate("numSeguiendo")
+    .populate("numSeguidores")
+    .populate({
+      path: "follows",
+      model: "follow",
+      select: "follow -_id -user",
+      populate: {
+        path: "follow",
+        select: "username img lastConnection",
+      },
+    });
 });
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("user", UserSchema);

@@ -26,9 +26,18 @@ Router.post(
   },
   (req, res, next) => PostController.create(req, res, next)
 );
-Router.delete("/:id", (req, res, next) =>
-  PostController.deleteP(req, res, next)
+Router.delete(
+  "/:id",
+  SchemaValid(joiSchemas.SchemeIdParam, "params"),
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.deleteP(req, res, next)
 );
 Router.get("/", (req, res, next) => PostController.getAll(req, res, next));
+Router.get(
+  "/:id",
+  SchemaValid(joiSchemas.SchemeIdParam, "params"),
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.getById(req, res, next)
+);
 
 module.exports = Router;

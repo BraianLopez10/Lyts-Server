@@ -1,5 +1,5 @@
-const { string } = require("joi");
 const Joi = require("joi");
+const mongoose = require("mongoose");
 
 const SchemaCreateUser = Joi.object({
   username: Joi.string().max(40).min(5).required(),
@@ -16,7 +16,10 @@ const SchemaBodyUpdateUser = Joi.object({
   bio: Joi.string(),
 });
 const SchemaCreatePost = Joi.object({
-  titlePost: Joi.string().required(),
+  titlePost: Joi.string(),
+});
+const SchemeIdParam = Joi.object({
+  id: Joi.string().length(24).required(),
 });
 
 module.exports = {
@@ -24,4 +27,5 @@ module.exports = {
   SchemaLoginUser,
   SchemaBodyUpdateUser,
   SchemaCreatePost,
+  SchemeIdParam,
 };

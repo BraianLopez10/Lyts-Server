@@ -7,9 +7,8 @@ require("./libs/passport");
 const routesApi = require("./routes");
 const routesAuth = require("./components/Auth/routes");
 const handleError = require("./middleware/handleError");
-
-const app = express();
 require("./db");
+const app = express();
 //Config
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

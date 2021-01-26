@@ -1,3 +1,6 @@
+const likeModel = require("../../components/Like/model");
+const commentModel = require("../../components/Comment/model");
+
 module.exports = function PostService(postModel) {
   async function create(idUser, titlePost = "", file) {
     const newPost = new postModel({
@@ -23,7 +26,29 @@ module.exports = function PostService(postModel) {
     return Promise.resolve();
   }
   async function getAll() {
-    let post = await postModel.find().populate({ path: "user", model: "user" });
+    let post = await postModel
+      .find()
+      .populate({ path: "user", model: "user", select: "username img  " });
+    return Promise.resolve(post);
+  }
+  async function getById(idPost, idUser) {
+    const post = await postModel.findOne({ _id: idPost });
+    const numLikes = await likeModel.where({ post: idPost }).count();
+    if (idUser) {
+      const isLikeFromUser = await likeModel
+        .where({ post: idPost, user: idUser })
+        .count();
+      if (isLikeFromUser > 0) {
+        post.isLike = true;
+      } else {
+        post.isLike = false;
+      }
+    } else {
+      post.isLike = false;
+    }
+    const numComment = await commentModel.where({ post: idPost }).count();
+    post._doc.numLikes = numLikes;
+    post._doc.numComment = numComment;
     return Promise.resolve(post);
   }
   return {
@@ -31,5 +56,6 @@ module.exports = function PostService(postModel) {
     deleteP,
     get,
     getAll,
+    getById,
   };
 };

@@ -16,16 +16,6 @@ const schemaPost = new mongoose.Schema(
       type: String,
       required: true,
     },
-    numLikes: {
-      type: Number,
-      min: 0,
-      default: 0,
-    },
-    numComentarios: {
-      type: Number,
-      min: 0,
-      default: 0,
-    },
   },
   { toJSON: { virtuals: true }, timestamps: true, versionKey: false }
 );
@@ -46,6 +36,7 @@ schemaPost.virtual("comments", {
   localField: "_id",
   foreignField: "post",
 });
+
 schemaPost.post("remove", async function () {
   let comments = await commentModel.find({ post: this._id });
   comments.forEach(async (comment) => {
@@ -56,5 +47,9 @@ schemaPost.post("remove", async function () {
     await like.remove();
   });
 });
-
+schemaPost.pre("findOne", function () {
+  this.populate({ path: "user", select: "username , img" }).populate({
+    path: "comments",
+  });
+});
 module.exports = mongoose.model("post", schemaPost);

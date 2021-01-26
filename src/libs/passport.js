@@ -62,7 +62,10 @@ passport.use(
         googleId: profile.id,
         name: profile.name.givenName,
         lastname: profile.name.familyName,
-        username: profile.emails[0].value,
+        username: (profile.name.givenName.replace(" ", "") + Date.now()).slice(
+          0,
+          20
+        ),
         password: profile.id,
         email: profile.emails[0].value,
         img: profile.photos[0].value,

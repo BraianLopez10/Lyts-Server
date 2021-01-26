@@ -34,39 +34,14 @@ module.exports = function PostController(PostService) {
       next(error);
     }
   }
+  async function getById(req, res, next) {
+    const { id } = req.params;
+    const post = await PostService.getById(id, req.user);
+    response(res, "Post", post, 200);
+  }
   // async function getPostById(req, res) {
   //   const post_id = req.params.post_id;
   //   if (!post_id) return res.status(500).send();
-  //   postModel
-  //     .findById(post_id)
-  //     .populate("user", "name img userName")
-  //     .populate({
-  //       path: "comments",
-  //       select: " content createdAt ",
-  //       options: { sort: { createdAt: -1 } },
-  //       populate: {
-  //         path: "user",
-  //         select: "userName img",
-  //       },
-  //     })
-  //     .then((post) => {
-  //       console.log(post);
-  //       if (post) {
-  //         //se pasa a un array para poder procesarlo en la funcion getLikeInPost()
-  //         let postInArray = [];
-  //         postInArray.push(post);
-  //         return getLikeInPost(req.user, postInArray).then((post) => {
-  //           return res.json(post);
-  //         });
-  //       } else {
-  //         console.log("Develve 404");
-  //         return res.status(404).send();
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       return res.status(500).send();
-  //     });
-  // }
 
   // async function feed(req, res) {
   //   const user = req.user;
@@ -135,5 +110,6 @@ module.exports = function PostController(PostService) {
     // feed,
     getAll,
     deleteP,
+    getById,
   };
 };
