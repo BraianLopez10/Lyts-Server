@@ -39,6 +39,7 @@ module.exports = function PostController(PostService) {
     const post = await PostService.getById(id, req.user);
     response(res, "Post", post, 200);
   }
+
   // async function getPostById(req, res) {
   //   const post_id = req.params.post_id;
   //   if (!post_id) return res.status(500).send();

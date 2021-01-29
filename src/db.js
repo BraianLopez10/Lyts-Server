@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const config = require("./config");
 
 let dbUri = config.db.uri;
+
 mongoose
   .connect(dbUri, {
     useNewUrlParser: true,

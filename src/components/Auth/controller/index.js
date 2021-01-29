@@ -3,23 +3,10 @@ const boom = require("@hapi/boom");
 
 module.exports = function AuthController(authService) {
   async function signUp(req, res, next) {
-    const param = req.body;
+    const data = req.body;
     try {
-      const existUser = await authService.getUser({
-        username: param.username,
-      });
-      if (existUser) {
-        next(boom.badRequest("El usuario ya esta registrado"));
-      }
-      const newUser = {
-        name: param.name,
-        email: param.email,
-        username: param.username,
-        password: param.password,
-      };
-      const userSaved = await authService.userCreate(newUser);
-      delete userSaved._doc.password;
-      return responseSuccess(res, "Registrado correctamente", userSaved, 201);
+      const newUser = await authService.userCreate(data);
+      return responseSuccess(res, "Registrado correctamente", newUser, 201);
     } catch (err) {
       next(err);
     }

@@ -52,12 +52,15 @@ passport.use(
       clientID: config.google.googleAppId || "",
       clientSecret: config.google.googleAppSecret || "",
       callbackURL: "http://localhost:4000/auth/google/callback",
+      proxy: true,
     },
     async function (accessToken, refreshToken, profile, cb) {
       const userExist = await AuthService.getUser({
         googleId: profile.id,
       });
       if (userExist) return cb(false, userExist);
+      const hashed = await AuthService.genHashed(profile.id);
+      console.log(profile.id);
       const newUser = {
         googleId: profile.id,
         name: profile.name.givenName,
@@ -66,11 +69,11 @@ passport.use(
           0,
           20
         ),
-        password: profile.id,
+        password: hashed,
         email: profile.emails[0].value,
         img: profile.photos[0].value,
       };
-      const userCreated = await AuthService.userCreate(newUser);
+      const userCreated = await AuthService.createGoogle(newUser);
       return cb(false, userCreated);
     }
   )
