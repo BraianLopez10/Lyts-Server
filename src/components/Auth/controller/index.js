@@ -24,6 +24,8 @@ module.exports = function AuthController(authService) {
   async function signInProvider(req, res, next) {
     try {
       const result = await authService.login(req.user);
+      res.set("token", result.token);
+      return res;
       responseSuccess(res, "", result.data, 200);
     } catch (err) {
       next(err);

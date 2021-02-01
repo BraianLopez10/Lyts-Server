@@ -26,6 +26,26 @@ Router.post(
   },
   (req, res, next) => PostController.create(req, res, next)
 );
+Router.post(
+  "/like/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.createLike(req, res, next)
+);
+Router.post(
+  "/comment/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.createComment(req, res, next)
+);
+Router.delete(
+  "/comment/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.deleteComment(req, res, next)
+);
+Router.delete(
+  "/like/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => PostController.deleteLike(req, res, next)
+);
 Router.delete(
   "/:id",
   SchemaValid(joiSchemas.SchemeIdParam, "params"),

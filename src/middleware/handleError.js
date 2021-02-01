@@ -7,6 +7,7 @@ function wrapWithBoom(error, req, res, next) {
   }
 }
 function handleError(error, req, res, next) {
+  console.error(error);
   const {
     output: { payload, statusCode },
   } = error;

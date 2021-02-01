@@ -51,7 +51,6 @@ module.exports = function UserService(userModel) {
       const user = await userModel.findByIdAndUpdate(idUser, {
         $pull: { follows: idToFollow },
       });
-      console.log(user);
       return Promise.resolve(userToFollow);
     } else {
       return Promise.reject("No existe user");
@@ -61,7 +60,7 @@ module.exports = function UserService(userModel) {
     const user = await UserModel.findById(idUser);
     const follows = user.follows;
     const idFollows = follows.map((f) => f._id);
-    const postsFollow = await getPostFollow(idFollows);
+    const postsFollow = await getPostFollow(idFollows, idUser);
     const toFollow = await getToFollow(idFollows, idUser);
     return {
       follows,
@@ -69,10 +68,17 @@ module.exports = function UserService(userModel) {
       toFollow,
     };
   }
-  async function getPostFollow(idFollows) {
-    const posts = await PostModel.find({ user: idFollows })
-      .populate("user")
-      .populate("comments");
+  async function getPostFollow(idFollows, idUser) {
+    const posts = await PostModel.find({ user: idFollows }).populate("user");
+    //Check if have like's user
+    posts.forEach((p, index) => {
+      p.comments.reverse();
+      if (p.likes.includes(idUser)) {
+        p._doc.isLike = true;
+      } else {
+        p._doc.isLike = false;
+      }
+    });
     return posts;
   }
   async function getToFollow(idFollows, idUser) {

@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const likeModel = require("../../Like/model");
-const commentModel = require("../../Comment/model");
 
 const schemaPost = new mongoose.Schema(
   {
@@ -12,6 +10,27 @@ const schemaPost = new mongoose.Schema(
       type: String,
       maxlength: 180,
     },
+    likes: {
+      type: [mongoose.Types.ObjectId],
+      ref: "user",
+    },
+    comments: {
+      type: [
+        {
+          content: String,
+          user: {
+            type: mongoose.Types.ObjectId,
+            ref: "user",
+          },
+          img: String,
+          username: String,
+          createdAt: {
+            type: mongoose.SchemaTypes.Date,
+            default: Date.now(),
+          },
+        },
+      ],
+    },
     img: {
       type: String,
       required: true,
@@ -19,37 +38,10 @@ const schemaPost = new mongoose.Schema(
   },
   { toJSON: { virtuals: true }, timestamps: true, versionKey: false }
 );
-
-schemaPost
-  .virtual("isLike")
-  .get(function () {
-    if (this._isLike == null) {
-      return false;
-    }
-    return this._isLike;
-  })
-  .set(function (v) {
-    this._isLike = v;
-  });
-schemaPost.virtual("comments", {
-  ref: "comment",
-  localField: "_id",
-  foreignField: "post",
-});
-
-schemaPost.post("remove", async function () {
-  let comments = await commentModel.find({ post: this._id });
-  comments.forEach(async (comment) => {
-    await comment.remove();
-  });
-  let likes = await likeModel.find({ post: this._id });
-  likes.forEach(async (like) => {
-    await like.remove();
-  });
+schemaPost.virtual("isLike").set(function (v) {
+  this._isLike = v;
 });
 schemaPost.pre("findOne", function () {
-  this.populate({ path: "user", select: "username , img" }).populate({
-    path: "comments",
-  });
+  this.populate({ path: "user", select: "username , img" });
 });
 module.exports = mongoose.model("post", schemaPost);

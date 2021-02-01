@@ -46,8 +46,9 @@ module.exports = function AuthService(userModel) {
     };
     const newUser = new userModel(toCreate);
     let userN = await newUser.save();
+    let token = buildToken(userN);
     delete userN._doc.password;
-    return Promise.resolve(userN);
+    return Promise.resolve({ user: userN, token });
   }
   function buildToken(data) {
     const payload = {

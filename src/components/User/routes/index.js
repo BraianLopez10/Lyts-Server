@@ -6,6 +6,7 @@ const SchemaValid = require("../../../middleware/checkSchema");
 const multer = require("multer");
 const handleUpload = require("../../../libs/multer-s3");
 const upload = handleUpload.single("img");
+
 Router.get("/", (req, res, next) => UserController.getAll(req, res, next));
 Router.get(
   "/feed",
@@ -50,13 +51,5 @@ Router.delete(
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => UserController.deleteFollow(req, res, next)
 );
-
-// // RouterUser.get("/", userController.getAllUsers); NO SE USA DE MOMENTO
-// RouterUser.get("/", userController.getUserLogged);
-// RouterUser.get("/tofollow", userController.toFollow);
-// RouterUser.get("/:user", userController.getUser);
-// RouterUser.patch("/", upload.single("img"), userController.updateUser); //ACTUALIZA USUARIO
-// RouterUser.get("/username/:userName", userController.getUserByUserName); //OBTIENE UN USUARIO POR USERNAME
-// RouterUser.get("/search/:userName", userController.searchUser); //BUSCA A UN USUARIO
 
 module.exports = Router;
