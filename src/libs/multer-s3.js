@@ -21,4 +21,4 @@ const storage = multerS3({
   },
 });
 
-module.exports = multer({ storage, limits: { fileSize: 2000000 } });
+module.exports = multer({ storage, limits: { fileSize: 5000000 } });

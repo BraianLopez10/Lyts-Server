@@ -1,5 +1,5 @@
 const UserModel = require("../../components/User/model");
-const PostModel = require("../../components/Post/model");
+const PostService = require("../../services/post");
 module.exports = function UserService(userModel) {
   async function getAll() {
     const users = await userModel.find(null, { password: 0 });
@@ -62,14 +62,16 @@ module.exports = function UserService(userModel) {
     const idFollows = follows.map((f) => f._id);
     const postsFollow = await getPostFollow(idFollows, idUser);
     const toFollow = await getToFollow(idFollows, idUser);
+    const postUser = await PostService.findByUsers(idUser);
     return {
       follows,
       postsFollow,
       toFollow,
+      postUser,
     };
   }
   async function getPostFollow(idFollows, idUser) {
-    const posts = await PostModel.find({ user: idFollows }).populate("user");
+    const posts = await PostService.findByUsers(idFollows);
     //Check if have like's user
     posts.forEach((p, index) => {
       p.comments.reverse();
@@ -92,6 +94,14 @@ module.exports = function UserService(userModel) {
     );
     return users;
   }
+  async function getExplorer() {
+    const posts = await PostService.getAll();
+    const users = await getAll();
+    return Promise.resolve({
+      posts,
+      users,
+    });
+  }
   return {
     getAll,
     get,
@@ -100,5 +110,6 @@ module.exports = function UserService(userModel) {
     getFeed,
     getDatalogged,
     removeFollow,
+    getExplorer,
   };
 };

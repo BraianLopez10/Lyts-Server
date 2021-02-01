@@ -76,6 +76,15 @@ module.exports = function UserController(userService) {
   }
   async function getFollow(req, res, next) {}
 
+  async function getExplorer(req, res, next) {
+    try {
+      const data = await userService.getExplorer();
+      response(res, "Explorer data", data, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   return {
     getAll,
     get,
@@ -85,5 +94,6 @@ module.exports = function UserController(userService) {
     deleteFollow,
     getFollow,
     getFeed,
+    getExplorer,
   };
 };

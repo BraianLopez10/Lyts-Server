@@ -36,10 +36,12 @@ module.exports = function PostService(postModel) {
     return Promise.resolve(post);
   }
   async function findByUsers(idsUsers) {
-    const posts = await PostModel.find({ user: idsUsers })
-      .populate("user")
+    const posts = await postModel
+      .find({ user: idsUsers })
+      .populate("user", (select = "-password"))
       .populate("comments");
-    if (!post) return Promise.reject("The post is not exist");
+    if (!posts) return Promise.reject("The post is not exist");
+    return Promise.resolve(posts);
   }
   //Likes
   async function createLike(idPost, idUser) {

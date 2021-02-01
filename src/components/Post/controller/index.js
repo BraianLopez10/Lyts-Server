@@ -2,7 +2,6 @@ const response = require("../../../utils/response");
 module.exports = function PostController(PostService) {
   async function create(req, res, next) {
     const { titlePost } = req.body;
-
     try {
       const postCreated = await PostService.create(
         req.user,

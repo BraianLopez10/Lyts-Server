@@ -18,6 +18,11 @@ Router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => UserController.getDatalogged(req, res, next)
 );
+Router.get(
+  "/explorer",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => UserController.getExplorer(req, res, next)
+);
 Router.get("/:username", (req, res, next) =>
   UserController.get(req, res, next)
 );
